@@ -10,7 +10,7 @@ int main(void)
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	GPIO_SetBits(GPIOC, GPIO_Pin_13);
 	// GPIO_ResetBits(GPIOC, GPIO_Pin_13);
-	
+	//jsaidjoia
 	while(1)
 	{
 		
