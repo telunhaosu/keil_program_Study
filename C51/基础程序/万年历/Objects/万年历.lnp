@@ -1,0 +1,3 @@
+".\Objects\mian.obj" 
+TO ".\Objects\万年历" 
+PRINT(".\Listings\万年历.m51")

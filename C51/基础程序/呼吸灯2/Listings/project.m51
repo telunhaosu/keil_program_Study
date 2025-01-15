@@ -1,0 +1,97 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    04/02/2023  21:53:44  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\main¡£c.obj TO .\Objects\project PRINT (.\Listings\project.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\main¡£c.obj (MAIN__C)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\Objects\project (MAIN__C)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0002H     UNIT         ?DT?MAIN__C
+            IDATA   000AH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     008CH     UNIT         ?C_C51STARTUP
+            CODE    008FH     005FH     UNIT         ?PR?MAIN?MAIN__C
+            CODE    00EEH     0019H     UNIT         ?PR?_DELAY?MAIN__C
+            CODE    0107H     0005H     UNIT         ?C_INITSEG
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\project (MAIN__C)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?MAIN__C
+  +--> ?C_INITSEG
+
+?PR?MAIN?MAIN__C
+  +--> ?PR?_DELAY?MAIN__C
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\project (MAIN__C)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN__C
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:00A0H         PUBLIC        P2
+  C:00FCH         PUBLIC        _delay
+  C:008FH         PUBLIC        main
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  04/02/2023  21:53:44  PAGE 2
+
+
+  D:0008H         PUBLIC        low
+  -------         PROC          MAIN
+  C:008FH         LINE#         23
+  C:008FH         LINE#         24
+  C:008FH         LINE#         25
+  C:0092H         LINE#         26
+  C:0099H         LINE#         27
+  C:009EH         LINE#         28
+  C:00A1H         LINE#         29
+  C:00A8H         LINE#         30
+  C:00A8H         LINE#         31
+  C:00ABH         LINE#         32
+  C:00BCH         LINE#         33
+  C:00BFH         LINE#         34
+  C:00C6H         LINE#         35
+  C:00D7H         LINE#         36
+  C:00DAH         LINE#         37
+  C:00E1H         LINE#         38
+  C:00E1H         LINE#         39
+  C:00E4H         LINE#         40
+  -------         ENDPROC       MAIN
+  -------         PROC          L?0016
+  -------         ENDPROC       L?0016
+  -------         PROC          _DELAY
+  D:0006H         SYMBOL        xus
+  C:00FCH         LINE#         45
+  C:00FCH         LINE#         46
+  C:0106H         LINE#         47
+  -------         ENDPROC       _DELAY
+  -------         ENDMOD        MAIN__C
+
+Program Size: data=11.0 xdata=0 code=268
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

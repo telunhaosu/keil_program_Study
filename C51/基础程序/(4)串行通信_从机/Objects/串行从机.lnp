@@ -1,0 +1,3 @@
+".\Objects\main.obj" 
+TO ".\Objects\串行从机" 
+PRINT(".\Listings\串行从机.m51")

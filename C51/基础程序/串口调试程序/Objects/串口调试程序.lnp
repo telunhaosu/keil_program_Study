@@ -1,0 +1,3 @@
+".\Objects\main.obj" 
+TO ".\Objects\串口调试程序" 
+PRINT(".\Listings\串口调试程序.m51") RAMSIZE(256) 

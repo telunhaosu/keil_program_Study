@@ -1,0 +1,1 @@
+"Hardware\DS18B20_New.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(.\Hardware;.\Main) DEBUG OBJECTEXTEND PRINT(.\Listings\DS18B20_New.lst) OBJECT(.\Objects\DS18B20_New.obj)

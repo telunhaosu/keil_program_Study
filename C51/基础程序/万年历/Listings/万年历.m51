@@ -1,0 +1,89 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    04/22/2023  21:50:35  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\mian.obj TO .\Objects\万年历 PRINT (.\Listings\万年历.m51)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\mian.obj (MIAN)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+
+
+LINK MAP OF MODULE:  .\Objects\万年历 (MIAN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     000EH     UNIT         ?PR?DELAY5000MS?MIAN
+            CODE    0011H     000CH     UNIT         ?C_C51STARTUP
+            CODE    001DH     0002H     UNIT         ?PR?MAIN?MIAN
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\万年历 (MIAN)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?MIAN
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\万年历 (MIAN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MIAN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:0003H         PUBLIC        Delay5000ms
+  C:001DH         PUBLIC        main
+  -------         PROC          DELAY5000MS
+  -------         DO            
+  D:0007H         SYMBOL        i
+  D:0006H         SYMBOL        j
+  D:0005H         SYMBOL        k
+  -------         ENDDO         
+  C:0003H         LINE#         3
+  C:0003H         LINE#         4
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  04/22/2023  21:50:35  PAGE 2
+
+
+  C:0003H         LINE#         7
+  C:0004H         LINE#         8
+  C:0006H         LINE#         9
+  C:0008H         LINE#         10
+  C:000AH         LINE#         12
+  C:000AH         LINE#         14
+  C:000AH         LINE#         15
+  C:000CH         LINE#         16
+  C:000EH         LINE#         17
+  C:0010H         LINE#         18
+  -------         ENDPROC       DELAY5000MS
+  -------         PROC          MAIN
+  C:001DH         LINE#         23
+  C:001DH         LINE#         24
+  C:001DH         LINE#         27
+  C:001DH         LINE#         28
+  C:001DH         LINE#         33
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MIAN
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?DELAY5000MS?MIAN
+
+Program Size: data=9.0 xdata=0 code=31
+LINK/LOCATE RUN COMPLETE.  1 WARNING(S),  0 ERROR(S)

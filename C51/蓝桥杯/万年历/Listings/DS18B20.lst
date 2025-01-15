@@ -1,0 +1,158 @@
+C51 COMPILER V9.60.7.0   DS18B20                                                           10/05/2023 16:51:27 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE DS18B20
+OBJECT MODULE PLACED IN .\Objects\DS18B20.obj
+COMPILER INVOKED BY: D:\app_dl_study\keil_v5\C51\BIN\C51.EXE Hardware\DS18B20.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Hardwa
+                    -re;.\Main) DEBUG OBJECTEXTEND PRINT(.\Listings\DS18B20.lst) OBJECT(.\Objects\DS18B20.obj)
+
+line level    source
+
+   1          #include <REGX51.H>
+   2          #include <intrins.h>
+   3          #include "Sys.h"
+   4          #include "Delay.h"
+   5          
+   6          sbit BUS_DQ = P2^3;
+   7          
+   8          void Delay10us(void)            //@12.000MHz
+   9          {
+  10   1              unsigned char data i;
+  11   1      
+  12   1              _nop_();
+  13   1              i = 2;
+  14   1              while (--i);
+  15   1      }
+  16          void Delay600us(void)           //@12.000MHz
+  17          {
+  18   1              unsigned char data i, j;
+  19   1      
+  20   1              i = 2;
+  21   1              j = 39;
+  22   1              do
+  23   1              {
+  24   2                      while (--j);
+  25   2              } while (--i);
+  26   1      }
+  27          
+  28          void DS18B20_Init(void)
+  29          {
+  30   1              BUS_DQ = 0;
+  31   1              Delay600us();
+  32   1              BUS_DQ = 1;
+  33   1              while(BUS_DQ);
+  34   1              while(!BUS_DQ);
+  35   1              BUS_DQ = 1;
+  36   1      }
+  37          
+  38          /********************************向DS18B20写入一字节***********************/
+  39          void DS18B20_Write(uchar com)//从低位开始写入DS18B20_Write
+  40          {
+  41   1              uchar mask;
+  42   1              for(mask=0x01;mask!=0;mask<<=1)
+  43   1              {
+  44   2                      //该位为0，先拉低，15us后在拉高，并通过延时使整个周期为60us
+  45   2                  //该位为1,先拉低并在15us内(此处选择5us)拉高，并通过延时使整个周期为60us  
+  46   2                      BUS_DQ=0;
+  47   2                      _nop_();_nop_();_nop_();_nop_();_nop_();//先拉低5us
+  48   2                      if((com&mask)==0)//该位是0
+  49   2                      {
+  50   3                              BUS_DQ=0;       
+  51   3                      }
+  52   2                      else//该位是1
+  53   2                      {
+  54   3                              BUS_DQ=1;               
+C51 COMPILER V9.60.7.0   DS18B20                                                           10/05/2023 16:51:27 PAGE 2   
+
+  55   3                      }
+  56   2                      Delay10us();Delay10us();Delay10us();Delay10us();Delay10us();;//延时60us
+  57   2                      _nop_();_nop_();_nop_();_nop_();_nop_();
+  58   2                      BUS_DQ=1;//拉高
+  59   2                      _nop_();_nop_();//写两个位之间至少有1us的间隔（此处选择2us）
+  60   2              }
+  61   1      }
+  62          
+  63          
+  64          uchar DS18B20_Read(void)
+  65          {
+  66   1              uchar Data=0, mask;
+  67   1              for (mask=0x01; mask!=0;mask<<=1)
+  68   1              {
+  69   2                      BUS_DQ = 0;
+  70   2                      _nop_();_nop_();
+  71   2                      BUS_DQ = 1;
+  72   2                      _nop_();_nop_();_nop_();_nop_();_nop_();_nop_();
+  73   2                      if (BUS_DQ == 0)
+  74   2                      {
+  75   3                              Data &= (~mask);
+  76   3                      }
+  77   2                      else
+  78   2                      {
+  79   3                              Data |= mask;
+  80   3                      }
+  81   2                              Delay10us(); Delay10us(); Delay10us();
+  82   2              Delay10us(); Delay10us(); 
+  83   2              _nop_();_nop_();//60ms
+  84   2              BUS_DQ = 1;                     //释放总线 >1us
+  85   2              _nop_();_nop_();        //2us
+  86   2              
+  87   2              }
+  88   1      return Data;
+  89   1      }
+  90          
+  91          uint Read_Temperature(uchar* Sig)
+  92          {
+  93   1              uint temp=0x00;
+  94   1              float tp;
+  95   1              uchar LSB=0,MSB=0;
+  96   1              Delay_MS(1);//延时10ms度过不稳定期
+  97   1              
+  98   1              DS18B20_Init();//Ds18b20初始化
+  99   1              DS18B20_Write(0xcc);//跳过ROM寻址
+ 100   1              DS18B20_Write(0x44);//启动一次温度转换
+ 101   1              
+ 102   1              DS18B20_Init();//Ds18b20初始化
+ 103   1              DS18B20_Write(0xcc);//跳过ROM寻址
+ 104   1              DS18B20_Write(0xbe);//发送读值命令
+ 105   1              
+ 106   1              LSB=DS18B20_Read();
+ 107   1              MSB=DS18B20_Read();
+ 108   1      
+ 109   1              temp=MSB;
+ 110   1              temp<<=8;
+ 111   1              temp|=LSB;
+ 112   1              if((temp&0xf000)==0xf000)//判断符号位，负温度
+ 113   1              {
+ 114   2                      temp=(~temp)+1; //数据取反再加1
+ 115   2                      tp=temp*(0.0625);//乘以精度
+ 116   2                      *Sig=1; 
+C51 COMPILER V9.60.7.0   DS18B20                                                           10/05/2023 16:51:27 PAGE 3   
+
+ 117   2              }
+ 118   1              else //正温度
+ 119   1              {
+ 120   2                      tp=temp*0.0625; 
+ 121   2                      *Sig=0;
+ 122   2              }
+ 123   1              temp=tp;
+ 124   1              if(tp-temp>=0.5)
+ 125   1              {
+ 126   2                      temp+=1;
+ 127   2              }
+ 128   1              return temp;
+ 129   1      }
+ 130          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    367    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       9
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

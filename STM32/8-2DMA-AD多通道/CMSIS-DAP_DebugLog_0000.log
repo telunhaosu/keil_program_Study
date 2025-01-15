@@ -1,0 +1,163 @@
+CMSIS_AGDI.DLL - CMSIS-DAP Driver Log
+
+00:10:06:956 (25/10/2023) - START SEQUENCE "InitTarget", "default" - ID 0
+00:10:06:956 (25/10/2023) - START SEQUENCE "InitInternals", "default" - ID 1
+00:10:06:956 (25/10/2023) - START SEQUENCE "InitDriver", "default" - ID 2
+00:10:06:956 (25/10/2023) - END SEQUENCE "InitDriver", "success" - ID 3
+00:10:06:956 (25/10/2023) - START SEQUENCE "InitDebugger", "default" - ID 4
+00:10:07:329 (25/10/2023) - END SEQUENCE "InitDebugger", "success" - ID 5
+00:10:07:329 (25/10/2023) - END SEQUENCE "InitInternals", "success" - ID 6
+00:10:07:329 (25/10/2023) - START SEQUENCE "DebugPortSetup", "default" - ID 7
+00:10:07:343 (25/10/2023) - END SEQUENCE "DebugPortSetup", "success" - ID 8
+00:10:07:344 (25/10/2023) - START SEQUENCE "DebugGetDeviceList", "default" - ID 9
+00:10:07:347 (25/10/2023) - END SEQUENCE "DebugGetDeviceList", "success" - ID 10
+00:10:07:347 (25/10/2023) - START SEQUENCE "PDSCDebug_DebugGetDeviceNames", "default" - ID 11
+00:10:07:347 (25/10/2023) - END SEQUENCE "PDSCDebug_DebugGetDeviceNames", "success" - ID 12
+  00:10:07:347 (25/10/2023) - START SEQUENCE "DebugPortStart", "default" - ID 13
+  00:10:07:357 (25/10/2023) - END SEQUENCE "DebugPortStart", "success" - ID 14
+00:10:07:357 (25/10/2023) - START SEQUENCE "DebugReadDAPFeatures", "default" - ID 15
+00:10:07:357 (25/10/2023) - START SEQUENCE "_EvalDPID", "default" - ID 16
+00:10:07:357 (25/10/2023) - END SEQUENCE "_EvalDPID", "success" - ID 17
+00:10:07:360 (25/10/2023) - WRITE DP  Access, Addr 0x00000008, Val 0x00000000, "DAP Write DP - Success" - ID 0
+00:10:07:366 (25/10/2023) - READ  AP  Access, AP 0x00000000, Addr 0x000000FC, Val 0x14770011, "DAP Read AP - Success" - ID 1
+00:10:07:366 (25/10/2023) - READ  AP  Access, AP 0x00000000, Addr 0x000000FC, Val 0x14770011, "SWD Read AP - Success" - ID 2
+00:10:07:384 (25/10/2023) - WRITE AP  Access, AP 0x00000000, Addr 0x00000000, Val 0x23000052, "DAP Write AP - Success" - ID 3
+00:10:07:384 (25/10/2023) - END SEQUENCE "DebugReadDAPFeatures", "success" - ID 18
+00:10:07:384 (25/10/2023) - START SEQUENCE "DebugDeviceUnlock", "calling sequence" - ID 19
+00:10:07:390 (25/10/2023) - READ  AP  Access, AP 0x00000000, Addr 0x000000F8, Val 0xE00FF003, "DAP Read AP - Success" - ID 4
+00:10:07:401 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE00FFFE4, End Addr 0xE00FFFE7, "DAP Read Memory Block (32-bit accesses) - Success" - ID 5
+  Item #0, AP 0, Addr 0xE00FFFE4, Value 0x00000004
+00:10:07:409 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE00FFFE8, End Addr 0xE00FFFEB, "DAP Read Memory Block (32-bit accesses) - Success" - ID 6
+  Item #0, AP 0, Addr 0xE00FFFE8, Value 0x0000000A
+00:10:07:409 (25/10/2023) - START SEQUENCE "DebugReadTargetFeatures", "default" - ID 20
+00:10:07:409 (25/10/2023) - START SEQUENCE "DebugReadRomTable", "default" - ID 21
+00:10:07:415 (25/10/2023) - READ  AP  Access, AP 0x00000000, Addr 0x000000F8, Val 0xE00FF003, "DAP Read AP - Success" - ID 7
+00:10:07:429 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE00FFFE4, End Addr 0xE00FFFE7, "DAP Read Memory Block (32-bit accesses) - Success" - ID 8
+  Item #0, AP 0, Addr 0xE00FFFE4, Value 0x00000004
+00:10:07:437 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE00FFFE8, End Addr 0xE00FFFEB, "DAP Read Memory Block (32-bit accesses) - Success" - ID 9
+  Item #0, AP 0, Addr 0xE00FFFE8, Value 0x0000000A
+00:10:07:443 (25/10/2023) - READ  AP  Access, AP 0x00000000, Addr 0x000000F8, Val 0xE00FF003, "DAP Read AP - Success" - ID 10
+00:10:07:455 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE00FFFF0, End Addr 0xE00FFFFF, "DAP Read Memory Block - Success" - ID 11
+  Item #0, AP 0, Addr 0xE00FFFF0, Value 0x0000000D
+  Item #1, AP 0, Addr 0xE00FFFF4, Value 0x00000010
+  Item #2, AP 0, Addr 0xE00FFFF8, Value 0x00000005
+  Item #3, AP 0, Addr 0xE00FFFFC, Value 0x000000B1
+00:10:07:466 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE00FFFD0, End Addr 0xE00FFFEF, "DAP Read Memory Block - Success" - ID 12
+  Item #0, AP 0, Addr 0xE00FFFD0, Value 0x00000000
+  Item #1, AP 0, Addr 0xE00FFFD4, Value 0x00000000
+  Item #2, AP 0, Addr 0xE00FFFD8, Value 0x00000000
+  Item #3, AP 0, Addr 0xE00FFFDC, Value 0x00000000
+  Item #4, AP 0, Addr 0xE00FFFE0, Value 0x00000010
+  Item #5, AP 0, Addr 0xE00FFFE4, Value 0x00000004
+  Item #6, AP 0, Addr 0xE00FFFE8, Value 0x0000000A
+  Item #7, AP 0, Addr 0xE00FFFEC, Value 0x00000000
+00:10:07:466 (25/10/2023) - ROM TABLE: Detected Unknown ROM Table at address 0xE00FF000 (PID 0x00000000000A0410, CID 0xB105100D)
+00:10:07:469 (25/10/2023) - READ  MEM Access, AP 0x00000000, Addr 0xE00FF000, Val 0xFFF0F003, "DAP Read Memory (32 bit) - Success" - ID 13
+00:10:07:478 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE000EFF0, End Addr 0xE000EFFF, "DAP Read Memory Block - Success" - ID 14
+  Item #0, AP 0, Addr 0xE000EFF0, Value 0x0000000D
+  Item #1, AP 0, Addr 0xE000EFF4, Value 0x000000E0
+  Item #2, AP 0, Addr 0xE000EFF8, Value 0x00000005
+  Item #3, AP 0, Addr 0xE000EFFC, Value 0x000000B1
+00:10:07:489 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE000EFD0, End Addr 0xE000EFEF, "DAP Read Memory Block - Success" - ID 15
+  Item #0, AP 0, Addr 0xE000EFD0, Value 0x00000004
+  Item #1, AP 0, Addr 0xE000EFD4, Value 0x00000000
+  Item #2, AP 0, Addr 0xE000EFD8, Value 0x00000000
+  Item #3, AP 0, Addr 0xE000EFDC, Value 0x00000000
+  Item #4, AP 0, Addr 0xE000EFE0, Value 0x00000000
+  Item #5, AP 0, Addr 0xE000EFE4, Value 0x000000B0
+  Item #6, AP 0, Addr 0xE000EFE8, Value 0x0000001B
+  Item #7, AP 0, Addr 0xE000EFEC, Value 0x00000000
+00:10:07:492 (25/10/2023) - WRITE MEM Access, AP 0x00000000, Addr 0xE000EDFC, Val 0x01000000, "DAP Write Memory (32 bit) - Success" - ID 16
+00:10:07:492 (25/10/2023) - ROM TABLE: Detected SCS (ARMv7-M) at address 0xE000E000 (PID 0x00000004001BB000, CID 0xB105E00D)
+00:10:07:495 (25/10/2023) - READ  MEM Access, AP 0x00000000, Addr 0xE00FF004, Val 0xFFF02003, "DAP Read Memory (32 bit) - Success" - ID 17
+00:10:07:504 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE0001FF0, End Addr 0xE0001FFF, "DAP Read Memory Block - Success" - ID 18
+  Item #0, AP 0, Addr 0xE0001FF0, Value 0x0000000D
+  Item #1, AP 0, Addr 0xE0001FF4, Value 0x000000E0
+  Item #2, AP 0, Addr 0xE0001FF8, Value 0x00000005
+  Item #3, AP 0, Addr 0xE0001FFC, Value 0x000000B1
+00:10:07:515 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE0001FD0, End Addr 0xE0001FEF, "DAP Read Memory Block - Success" - ID 19
+  Item #0, AP 0, Addr 0xE0001FD0, Value 0x00000004
+  Item #1, AP 0, Addr 0xE0001FD4, Value 0x00000000
+  Item #2, AP 0, Addr 0xE0001FD8, Value 0x00000000
+  Item #3, AP 0, Addr 0xE0001FDC, Value 0x00000000
+  Item #4, AP 0, Addr 0xE0001FE0, Value 0x00000002
+  Item #5, AP 0, Addr 0xE0001FE4, Value 0x000000B0
+  Item #6, AP 0, Addr 0xE0001FE8, Value 0x0000001B
+  Item #7, AP 0, Addr 0xE0001FEC, Value 0x00000000
+00:10:07:515 (25/10/2023) - ROM TABLE: Detected DWT (ARMv7-M) at address 0xE0001000 (PID 0x00000004001BB002, CID 0xB105E00D)
+00:10:07:518 (25/10/2023) - READ  MEM Access, AP 0x00000000, Addr 0xE00FF008, Val 0xFFF03003, "DAP Read Memory (32 bit) - Success" - ID 20
+00:10:07:527 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE0002FF0, End Addr 0xE0002FFF, "DAP Read Memory Block - Success" - ID 21
+  Item #0, AP 0, Addr 0xE0002FF0, Value 0x0000000D
+  Item #1, AP 0, Addr 0xE0002FF4, Value 0x000000E0
+  Item #2, AP 0, Addr 0xE0002FF8, Value 0x00000005
+  Item #3, AP 0, Addr 0xE0002FFC, Value 0x000000B1
+00:10:07:538 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE0002FD0, End Addr 0xE0002FEF, "DAP Read Memory Block - Success" - ID 22
+  Item #0, AP 0, Addr 0xE0002FD0, Value 0x00000004
+  Item #1, AP 0, Addr 0xE0002FD4, Value 0x00000000
+  Item #2, AP 0, Addr 0xE0002FD8, Value 0x00000000
+  Item #3, AP 0, Addr 0xE0002FDC, Value 0x00000000
+  Item #4, AP 0, Addr 0xE0002FE0, Value 0x00000003
+  Item #5, AP 0, Addr 0xE0002FE4, Value 0x000000B0
+  Item #6, AP 0, Addr 0xE0002FE8, Value 0x0000000B
+  Item #7, AP 0, Addr 0xE0002FEC, Value 0x00000000
+00:10:07:538 (25/10/2023) - ROM TABLE: Detected FPB (ARMv7-M) at address 0xE0002000 (PID 0x00000004000BB003, CID 0xB105E00D)
+00:10:07:541 (25/10/2023) - READ  MEM Access, AP 0x00000000, Addr 0xE00FF00C, Val 0xFFF01003, "DAP Read Memory (32 bit) - Success" - ID 23
+00:10:07:550 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE0000FF0, End Addr 0xE0000FFF, "DAP Read Memory Block - Success" - ID 24
+  Item #0, AP 0, Addr 0xE0000FF0, Value 0x0000000D
+  Item #1, AP 0, Addr 0xE0000FF4, Value 0x000000E0
+  Item #2, AP 0, Addr 0xE0000FF8, Value 0x00000005
+  Item #3, AP 0, Addr 0xE0000FFC, Value 0x000000B1
+00:10:07:561 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE0000FD0, End Addr 0xE0000FEF, "DAP Read Memory Block - Success" - ID 25
+  Item #0, AP 0, Addr 0xE0000FD0, Value 0x00000004
+  Item #1, AP 0, Addr 0xE0000FD4, Value 0x00000000
+  Item #2, AP 0, Addr 0xE0000FD8, Value 0x00000000
+  Item #3, AP 0, Addr 0xE0000FDC, Value 0x00000000
+  Item #4, AP 0, Addr 0xE0000FE0, Value 0x00000001
+  Item #5, AP 0, Addr 0xE0000FE4, Value 0x000000B0
+  Item #6, AP 0, Addr 0xE0000FE8, Value 0x0000001B
+  Item #7, AP 0, Addr 0xE0000FEC, Value 0x00000000
+00:10:07:561 (25/10/2023) - ROM TABLE: Detected ITM (ARMv7-M) at address 0xE0000000 (PID 0x00000004001BB001, CID 0xB105E00D)
+00:10:07:564 (25/10/2023) - READ  MEM Access, AP 0x00000000, Addr 0xE00FF010, Val 0xFFF41003, "DAP Read Memory (32 bit) - Success" - ID 26
+00:10:07:573 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE0040FF0, End Addr 0xE0040FFF, "DAP Read Memory Block - Success" - ID 27
+  Item #0, AP 0, Addr 0xE0040FF0, Value 0x0000000D
+  Item #1, AP 0, Addr 0xE0040FF4, Value 0x00000090
+  Item #2, AP 0, Addr 0xE0040FF8, Value 0x00000005
+  Item #3, AP 0, Addr 0xE0040FFC, Value 0x000000B1
+00:10:07:584 (25/10/2023) - READ  MEM BLOCK Access, AP 0x00000000, Start Addr 0xE0040FD0, End Addr 0xE0040FEF, "DAP Read Memory Block - Success" - ID 28
+  Item #0, AP 0, Addr 0xE0040FD0, Value 0x00000004
+  Item #1, AP 0, Addr 0xE0040FD4, Value 0x00000000
+  Item #2, AP 0, Addr 0xE0040FD8, Value 0x00000000
+  Item #3, AP 0, Addr 0xE0040FDC, Value 0x00000000
+  Item #4, AP 0, Addr 0xE0040FE0, Value 0x00000023
+  Item #5, AP 0, Addr 0xE0040FE4, Value 0x000000B9
+  Item #6, AP 0, Addr 0xE0040FE8, Value 0x0000001B
+  Item #7, AP 0, Addr 0xE0040FEC, Value 0x00000000
+00:10:07:584 (25/10/2023) - ROM TABLE: Detected TPIU (Cortex-M3) at address 0xE0040000 (PID 0x00000004001BB923, CID 0xB105900D)
+00:10:07:587 (25/10/2023) - READ  MEM Access, AP 0x00000000, Addr 0xE00FF014, Val 0xFFF42002, "DAP Read Memory (32 bit) - Success" - ID 29
+00:10:07:590 (25/10/2023) - READ  MEM Access, AP 0x00000000, Addr 0xE00FF018, Val 0x00000000, "DAP Read Memory (32 bit) - Success" - ID 30
+00:10:07:590 (25/10/2023) - END SEQUENCE "DebugReadRomTable", "success" - ID 22
+00:10:07:590 (25/10/2023) - START SEQUENCE "_EvalCPUID", "default" - ID 23
+00:10:07:593 (25/10/2023) - READ  MEM Access, AP 0x00000000, Addr 0xE000ED00, Val 0x411FC231, "DAP Read Memory (32 bit) - Success" - ID 31
+00:10:07:593 (25/10/2023) - END SEQUENCE "_EvalCPUID", "success" - ID 24
+00:10:07:595 (25/10/2023) - READ  DP  Access, Addr 0x00000004, Val 0xF0000F40, "DAP Read DP - Success" - ID 32
+00:10:07:595 (25/10/2023) - END SEQUENCE "DebugReadTargetFeatures", "success" - ID 25
+00:10:07:595 (25/10/2023) - START SEQUENCE "DebugCoreStart", "calling sequence" - ID 26
+00:10:07:603 (25/10/2023) - WRITE MEM BLOCK Access, AP 0x00000000, Start Addr 0xE000EDF0, End Addr 0xE000EDF3, "DAP Write Memory Block (32-bit accesses) - Success" - ID 33
+  Item #0, AP 0, Addr 0xE000EDF0, Value 0xA05F0001
+00:10:07:611 (25/10/2023) - WRITE MEM BLOCK Access, AP 0x00000000, Start Addr 0xE0042004, End Addr 0xE0042007, "DAP Write Memory Block (32-bit accesses) - Success" - ID 34
+  Item #0, AP 0, Addr 0xE0042004, Value 0x00000007
+00:10:07:611 (25/10/2023) - END SEQUENCE "DebugCoreStart", "success" - ID 27
+00:10:08:615 (25/10/2023) - READ  MEM Access, AP 0x00000000, Addr 0xE000EDFC, Val 0xFFFFFFFF, "DAP Read Memory (32 bit) - FAILED" - ID 35
+00:10:09:724 (25/10/2023) - END SEQUENCE "InitTarget", "failed" - ID 28
+00:10:09:724 (25/10/2023) - START SEQUENCE "StopTarget", "default" - ID 29
+00:10:10:736 (25/10/2023) - WRITE MEM BLOCK Access, AP 0x00000000, Start Addr 0xE0002000, End Addr 0xE0002007, "DAP Write Memory Block - FAILED" - ID 36
+00:10:10:736 (25/10/2023) - START SEQUENCE "_UnInitTrace", "default" - ID 30
+00:10:10:736 (25/10/2023) - END SEQUENCE "_UnInitTrace", "success" - ID 31
+00:10:10:736 (25/10/2023) - START SEQUENCE "DebugPortStop", "default" - ID 32
+00:10:10:990 (25/10/2023) - WRITE DP  Access, Addr 0x00000004, Val 0x00000000, "DAP Write DP - Failed" - ID 37
+00:10:10:990 (25/10/2023) - END SEQUENCE "DebugPortStop", "failed" - ID 33
+00:10:10:990 (25/10/2023) - START SEQUENCE "UnInitDebugger", "default" - ID 34
+00:10:10:992 (25/10/2023) - END SEQUENCE "UnInitDebugger", "success" - ID 35
+00:10:10:992 (25/10/2023) - START SEQUENCE "_UnInitDriver", "default" - ID 36
+00:10:10:992 (25/10/2023) - END SEQUENCE "_UnInitDriver", "success" - ID 37
+00:10:10:992 (25/10/2023) - END SEQUENCE "StopTarget", "success" - ID 38

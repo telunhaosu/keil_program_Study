@@ -1,0 +1,226 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              05/08/2023 22:52:09 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <reg51.h>  //单片机头文件
+   2          
+   3          //宏定义
+   4          #define uint unsigned int 
+   5          #define uchar unsigned char
+   6          uchar ii;
+   7          //位声明
+   8          sbit k1=P2^0;
+   9          sbit k2=P2^1;
+  10          sbit k3=P2^2;
+  11          sbit k4=P2^3;
+  12          sbit k5=P2^4;
+  13          sbit k6=P2^5;
+  14          sbit k7=P2^6;
+  15          sbit k8=P2^7;
+  16          //灯声明
+  17          sbit led0=P1^0;
+  18          sbit led1=P1^1;
+  19          sbit led2=P1^2;
+  20          sbit led3=P1^3;
+  21          sbit led4=P1^4;
+  22          sbit led5=P1^5;
+  23          sbit led6=P1^6;
+  24          sbit led7=P1^7;
+  25          //函数声明
+  26          void Usart_Init(void);
+  27          void DelayMs(uint xms);
+  28          void Send_Data(uchar Key_val);
+  29          void Keyscan(void);
+  30          
+  31          //主函数
+  32          void main()
+  33          {
+  34   1        Usart_Init();
+  35   1        while(1)  //循环
+  36   1        {
+  37   2           Keyscan();
+  38   2        }
+  39   1      }
+  40          
+  41          //串口中断初始化
+  42          void Usart_Init(void)
+  43          {
+  44   1          TMOD=0X20;//定时器1方式2
+  45   1          TH1=0xF3;         //计数器初始值设置，注意波特率是4800
+  46   1          TL1=0xF3;
+  47   1          TR1=1;//打开定时器
+  48   1          SM0=0;//设置串口工作方式
+  49   1          SM1=1;
+  50   1          REN = 1;
+  51   1          EA=1;//打开总中断
+  52   1          ES=1;//打开串口中断
+  53   1      }
+  54          
+C51 COMPILER V9.59.0.0   MAIN                                                              05/08/2023 22:52:09 PAGE 2   
+
+  55          //延时函数
+  56          void DelayMs(uint xms)
+  57          {   
+  58   1        uchar i,j;                        
+  59   1        for(i=xms;i>0;i--)
+  60   1          for(j=110;j>0;j--);
+  61   1      }
+  62          
+  63          //发送数据函数
+  64          void Send_Data(uchar Key_val)
+  65          {
+  66   1          SBUF=Key_val;      //将要发送的数据存入发送缓冲器中
+  67   1          while(!TI);        //若发送中断标志位没有置1(正在发送数据)，就等待
+  68   1          TI=0; //若发送完成，TI自动置1，这里把它清零
+  69   1      }
+  70           
+  71          //按键函数
+  72          void Keyscan(void)
+  73          {
+  74   1        uchar Val;  //定义局部变量
+  75   1        if(k1==0)   //如果按下k1
+  76   1        {
+  77   2          DelayMs(10);//消抖
+  78   2          if(k1==0) //确认按下k1
+  79   2          {
+  80   3                Val=0;
+  81   3      
+  82   3          }
+  83   2          while(!k1){}; //等待按键释放
+  84   2          Send_Data(Val); //发送“0”
+  85   2        }
+  86   1        if(k2==0)   //如果按下k2
+  87   1        {
+  88   2          DelayMs(10);//消抖
+  89   2          if(k2==0) //确认按下k2
+  90   2          {
+  91   3              Val=1;
+  92   3          }
+  93   2          while(!k2); //等待按键释放
+  94   2          Send_Data(Val); //发送“1”
+  95   2        }
+  96   1        if(k3==0)   //如果按下k3
+  97   1        {
+  98   2          DelayMs(10);//消抖
+  99   2          if(k3==0) //确认按下k3
+ 100   2          {
+ 101   3              Val=2;  //发送“2”
+ 102   3          }
+ 103   2          while(!k3); //等待按键释放
+ 104   2          Send_Data(Val);
+ 105   2        }
+ 106   1        if(k4==0)   //如果按下k4
+ 107   1        {
+ 108   2          DelayMs(10);//消抖
+ 109   2          if(k4==0) //确认按下k4
+ 110   2          {
+ 111   3              Val=3;  //发送“3”
+ 112   3          }
+ 113   2          while(!k4); //等待按键释放
+ 114   2          Send_Data(Val);
+ 115   2        }
+ 116   1        if(k5==0)   //如果按下k5
+C51 COMPILER V9.59.0.0   MAIN                                                              05/08/2023 22:52:09 PAGE 3   
+
+ 117   1        {
+ 118   2          DelayMs(10);//消抖
+ 119   2          if(k5==0) //确认按下k5
+ 120   2          {
+ 121   3              Val=4;
+ 122   3          }
+ 123   2          while(!k5){}; //等待按键释放
+ 124   2          Send_Data(Val); //发送“4”
+ 125   2        }
+ 126   1        if(k6==0)   //如果按下k6
+ 127   1        {
+ 128   2          DelayMs(10);//消抖
+ 129   2          if(k6==0) //确认按下k6
+ 130   2          {
+ 131   3              Val=5;
+ 132   3          }
+ 133   2          while(!k6); //等待按键释放
+ 134   2          Send_Data(Val); //发送“6”
+ 135   2        }
+ 136   1        if(k7==0)   //如果按下k7
+ 137   1        {
+ 138   2          DelayMs(10);//消抖
+ 139   2          if(k7==0) //确认按下k7
+ 140   2          {
+ 141   3              Val=6;
+ 142   3          }
+ 143   2          while(!k7); //等待按键释放
+ 144   2          Send_Data(Val); //发送“7”
+ 145   2        }
+ 146   1        if(k8==0)   //如果按下k8
+ 147   1        {
+ 148   2          DelayMs(10);//消抖
+ 149   2          if(k8==0) //确认按下k8
+ 150   2          {
+ 151   3              Val=7;
+ 152   3          }
+ 153   2          while(!k8); //等待按键释放
+ 154   2          Send_Data(Val); //发送“7”
+ 155   2        }
+ 156   1      }
+ 157          void uart() interrupt 4
+ 158          {
+ 159   1        if(RI)
+ 160   1        {
+ 161   2            uchar receiveData;
+ 162   2        ii=SBUF;                   
+ 163   2         switch(ii)
+ 164   2        {
+ 165   3          case 0: //收到“0”
+ 166   3            led0=~led0;
+ 167   3            break;
+ 168   3          case 1: //收到“1”
+ 169   3            led1=~led1;
+ 170   3            break;
+ 171   3          case 2: //收到“2”
+ 172   3            led2=~led2;
+ 173   3            break;
+ 174   3          case 3: //收到“3”
+ 175   3            led3=~led3;
+ 176   3            break;
+ 177   3          case 4: //收到“4”
+ 178   3            led4=~led4;
+C51 COMPILER V9.59.0.0   MAIN                                                              05/08/2023 22:52:09 PAGE 4   
+
+ 179   3            break;
+ 180   3          case 5: //收到“5”
+ 181   3            led5=~led5;
+ 182   3            break;
+ 183   3          case 6: //收到“6”
+ 184   3            led6=~led6;
+ 185   3            break;
+ 186   3          case 7: //收到“7”
+ 187   3            led7=~led7;
+ 188   3            break;
+ 189   3          default:
+ 190   3            break;
+ 191   3        }
+ 192   2        receiveData=SBUF;        //出去接收到的数据
+ 193   2        RI=0;                    //清除接收中断标志位
+ 194   2        }
+ 195   1      }
+ 196          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    327    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

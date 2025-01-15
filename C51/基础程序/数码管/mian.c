@@ -1,0 +1,27 @@
+#include <REGX51.H>
+
+unsigned char code tab[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f};
+unsigned char code big[] = {0x7F, 0xBF, 0xDF, 0xEF, 0xF7, 0xFB, 0xFD, 0xFE};
+unsigned char code num[] = {0x5b,0x06,0x3f, 0x4f,0x5b,0x6f, 0x6f, 0x5b};
+void delay(unsigned int i)
+{
+	unsigned int j;
+	for (; i >0; i--)
+	{
+		for (j = 124; j > 0; j--);
+	}
+}	
+void main(void)
+{
+	while(1)
+	{
+		unsigned char i;
+		for (i = 0; i < 8; i++)
+		{
+			P3 = big[7 - i];
+			P2 = num[i];
+			delay(5);
+			
+		}
+	}
+}

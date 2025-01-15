@@ -1,0 +1,359 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              10/14/2023 13:15:55 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\app_dl_study\keil_v5\C51\BIN\C51.EXE Main\main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Hardware;.\Ma
+                    -in) DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX51.H>
+   2          #include "Sys.h"
+   3          #include "SEG_8.h"
+   4          #include "DS1302.h"
+   5          #include "DS18B20.h"
+   6          #include "Delay.h"
+   7          
+   8          #define ROLL 1
+   9          #define TIME 2
+  10          #define DATE 3
+  11          #define TEMP 4
+  12          
+  13          #define ROM_0 0
+  14          #define ROM_1 1
+  15          
+  16          uchar Flag = ROLL;                      //显示模式标志位
+  17          uchar Key_Counter;                      //按键计数次数变量
+  18          uchar Timer0_Counter;           //定时器0计数变量
+  19          uchar SEG_ShiftFlag;            //数码管滚动判断位
+  20          uchar ConvertT_Counter;         //温度转换时间计次
+  21          
+  22          void Timer0_Init(void);
+  23          void Timer1_Init(void);
+  24          void EXT0_Init(void);
+  25          
+  26          void main(void)
+  27          {
+  28   1              
+  29   1              uchar Num[8], Silding_Num[28];
+  30   1              int T0, T1;
+  31   1              uchar Ret;
+  32   1              
+  33   1              DS18B20_Match_ConfigT(0x1f, ROM_0);
+  34   1              DS18B20_Match_ConvertT(ROM_0);
+  35   1      
+  36   1              DS18B20_Match_ConfigT(0x1f, ROM_1);
+  37   1              DS18B20_Match_ConvertT(ROM_1);
+  38   1              
+  39   1              SEG_Init(Num);
+  40   1              DS1302_Init();
+  41   1              Timer0_Init();
+  42   1              Timer1_Init();
+  43   1              EXT0_Init();
+  44   1      
+  45   1              SEG_Mode_Select(0x00);
+  46   1              
+  47   1              while(1)
+  48   1              {
+  49   2                      if (Flag == ROLL)
+  50   2                      {
+  51   3                              uchar i=0, j;
+  52   3                              while (Silding_Num[i+7]!=0xFE)
+  53   3                              {
+  54   4                                      Silding_Num[27] = 0xFE; //作结束字符
+C51 COMPILER V9.60.7.0   MAIN                                                              10/14/2023 13:15:55 PAGE 2   
+
+  55   4                                      if (Flag == ROLL)
+  56   4                                      {
+  57   5                                              
+  58   5                                              //---------------------时间部分----------------------//
+  59   5                                              //秒
+  60   5                                              Ret = DS1302_ReadByte(0x81);
+  61   5                                              Silding_Num[7] = SEG_Char[BCDCode_GetUnit(Ret)];
+  62   5                                              Silding_Num[6] = SEG_Char[BCDCode_GetDecade(Ret)];
+  63   5                                              Silding_Num[5] = 0xBF;  //字符'-'，作间隔
+  64   5                                              //分
+  65   5                                              Ret = DS1302_ReadByte(0x83);
+  66   5                                              Silding_Num[4] = SEG_Char[BCDCode_GetUnit(Ret)];
+  67   5                                              Silding_Num[3] = SEG_Char[BCDCode_GetDecade(Ret)];
+  68   5                                              Silding_Num[2] = 0xBF;  //字符'-'，作间隔
+  69   5                                              //时
+  70   5                                              Ret = DS1302_ReadByte(0x85);
+  71   5                                              Silding_Num[1] = SEG_Char[BCDCode_GetUnit(Ret)];
+  72   5                                              Silding_Num[0] = SEG_Char[BCDCode_GetDecade(Ret)];
+  73   5                                              Silding_Num[8] = 0xF7;  //字符'_'，作间隔
+  74   5                                              //日
+  75   5                                              Ret = DS1302_ReadByte(0x87);
+  76   5                                              Silding_Num[16] = SEG_Char[BCDCode_GetUnit(Ret)];
+  77   5                                              Silding_Num[15] = SEG_Char[BCDCode_GetDecade(Ret)];
+  78   5                                              Silding_Num[14] = 0xBF; //字符'-'，作间隔
+  79   5                                              //月
+  80   5                                              Ret = DS1302_ReadByte(0x89);
+  81   5                                              Silding_Num[13] = SEG_Char[BCDCode_GetUnit(Ret)];
+  82   5                                              Silding_Num[12] = SEG_Char[BCDCode_GetDecade(Ret)];
+  83   5                                              Silding_Num[11] = 0xBF; //字符'-'，作间隔
+  84   5                                              //年
+  85   5                                              Ret = DS1302_ReadByte(0x8D);
+  86   5                                              Silding_Num[10] = SEG_Char[BCDCode_GetUnit(Ret)];
+  87   5                                              Silding_Num[9]  = SEG_Char[BCDCode_GetDecade(Ret)];
+  88   5                                              Silding_Num[17] = 0xF7; //字符'_'，作间隔
+  89   5                                              
+  90   5                                              for (j=0;j<8;j++)
+  91   5                                              {
+  92   6                                                      Num[j]=Silding_Num[i+j];
+  93   6                                              }
+  94   5                                              //---------------------温度部分----------------------//
+  95   5                                              if (ConvertT_Counter >= 2)      //判断是否留有足够的温度转换时间
+  96   5                                              {
+  97   6                                                      TR1 = 0;        ConvertT_Counter = 0;   //停止计时并清零计数标志位ConvertT_Counter
+  98   6                                                      //ROM_0
+  99   6                                                      T0 = DS18B20_Match_ReadT(ROM_0);
+ 100   6                                                      if (T0 < 0)     //判断正负
+ 101   6                                                      {
+ 102   7                                                              T0 = -T0;
+ 103   7                                                              Silding_Num[18] = 0xBF;                 //显示"-"
+ 104   7                                                      }
+ 105   6                                                      else
+ 106   6                                                      {
+ 107   7                                                              Silding_Num[18] = 0xFF;                 //显示"空"
+ 108   7                                                      }
+ 109   6                                                      Silding_Num[19] = SEG_Char[T0/100];
+ 110   6                                                      Silding_Num[20] = SEG_Char[T0/10%10];
+ 111   6                                                      Silding_Num[21] = SEG_Char[T0%10];
+ 112   6                                                      DS18B20_Match_ConvertT(ROM_0);
+ 113   6                                                      Silding_Num[22] = 0xF7; //字符'_'，作间隔
+ 114   6                                                      SEG_Display(Num);       //DS18B20的match指令时间较长，所以需要在读取每个ROM后添加数�
+             -�管刷屏显示代码，确保显示稳定
+ 115   6                                                      //ROM_1
+C51 COMPILER V9.60.7.0   MAIN                                                              10/14/2023 13:15:55 PAGE 3   
+
+ 116   6                                                      T1 = DS18B20_Match_ReadT(ROM_1);
+ 117   6                                                      if (T1 < 0)     //判断正负
+ 118   6                                                      {
+ 119   7                                                              T1 = -T1;
+ 120   7                                                              Silding_Num[23] = 0xBF;                 //显示"-"
+ 121   7                                                      }
+ 122   6                                                      else
+ 123   6                                                      {
+ 124   7                                                              Silding_Num[23] = 0xFF;                 //显示"空"
+ 125   7                                                      }
+ 126   6                                                      Silding_Num[24] = SEG_Char[T1/100];
+ 127   6                                                      Silding_Num[25] = SEG_Char[T1/10%10];
+ 128   6                                                      Silding_Num[26] = SEG_Char[T1%10];
+ 129   6                                                      DS18B20_Match_ConvertT(ROM_1);
+ 130   6                                                      SEG_Display(Num);
+ 131   6                                                      TR1 = 1;                        //开启计时
+ 132   6                                              }
+ 133   5                                              SEG_Display(Num);
+ 134   5                                              if (SEG_ShiftFlag)              //判断数码管是否向左滚动
+ 135   5                                              {       
+ 136   6                                                      i++;
+ 137   6                                                      SEG_ShiftFlag=0;
+ 138   6                                              }
+ 139   5                                      }
+ 140   4                                      else
+ 141   4                                      {break;}        
+ 142   4                              }
+ 143   3                      }
+ 144   2                      else if (Flag == TIME)
+ 145   2                      {
+ 146   3                              //秒
+ 147   3                              Ret = DS1302_ReadByte(0x81);
+ 148   3                              Num[7] = SEG_Char[BCDCode_GetUnit(Ret)];
+ 149   3                              Num[6] = SEG_Char[BCDCode_GetDecade(Ret)];
+ 150   3                              Num[5] = 0xBF;  //字符'-'，作间隔
+ 151   3                              //分
+ 152   3                              Ret = DS1302_ReadByte(0x83);
+ 153   3                              Num[4] = SEG_Char[BCDCode_GetUnit(Ret)];
+ 154   3                              Num[3] = SEG_Char[BCDCode_GetDecade(Ret)];
+ 155   3                              Num[2] = 0xBF;  //字符'-'，作间隔
+ 156   3                              //时
+ 157   3                              Ret = DS1302_ReadByte(0x85);
+ 158   3                              Num[1] = SEG_Char[BCDCode_GetUnit(Ret)];
+ 159   3                              Num[0] = SEG_Char[BCDCode_GetDecade(Ret)];
+ 160   3                              
+ 161   3                              SEG_Display(Num);
+ 162   3                      }
+ 163   2                      else if (Flag == DATE)
+ 164   2                      {
+ 165   3                              //日
+ 166   3                              Ret = DS1302_ReadByte(0x87);
+ 167   3                              Num[7] = SEG_Char[BCDCode_GetUnit(Ret)];
+ 168   3                              Num[6] = SEG_Char[BCDCode_GetDecade(Ret)];
+ 169   3                              Num[5] = 0xBF;  //字符'-'，作间隔
+ 170   3                              //月
+ 171   3                              Ret = DS1302_ReadByte(0x89);
+ 172   3                              Num[4] = SEG_Char[BCDCode_GetUnit(Ret)];
+ 173   3                              Num[3] = SEG_Char[BCDCode_GetDecade(Ret)];
+ 174   3                              Num[2] = 0xBF;  //字符'-'，作间隔
+ 175   3                              //年
+ 176   3                              Ret = DS1302_ReadByte(0x8D);
+ 177   3                              Num[1] = SEG_Char[BCDCode_GetUnit(Ret)];
+C51 COMPILER V9.60.7.0   MAIN                                                              10/14/2023 13:15:55 PAGE 4   
+
+ 178   3                              Num[0] = SEG_Char[BCDCode_GetDecade(Ret)];
+ 179   3                              SEG_Display(Num);
+ 180   3                      }
+ 181   2                      else if (Flag == TEMP)
+ 182   2                      {       
+ 183   3                              if (ConvertT_Counter >= 2)      //判断是否留有足够的转换时间
+ 184   3                              {
+ 185   4                                      //停止计时并清零计数标志位ConvertT_Counter
+ 186   4                                      TR1 = 0;        ConvertT_Counter = 0;
+ 187   4                                      //ROM_0
+ 188   4                                      T0 = DS18B20_Match_ReadT(ROM_0);
+ 189   4                                      if (T0 < 0)     //判断正负
+ 190   4                                      {
+ 191   5                                              T0 = -T0;
+ 192   5                                              Num[0] = 0xBF;          //显示"-"
+ 193   5                                      }
+ 194   4                                      else
+ 195   4                                      {
+ 196   5                                              Num[0] = 0xFF;     //显示"空"
+ 197   5                                      }
+ 198   4                                      Num[1] = SEG_Char[T0/100];
+ 199   4                                      Num[2] = SEG_Char[T0/10%10];
+ 200   4                                      Num[3] = SEG_Char[T0%10];
+ 201   4                                      DS18B20_Match_ConvertT(ROM_0);
+ 202   4                                      SEG_Display(Num);
+ 203   4                                      //ROM_1
+ 204   4                                      T1 = DS18B20_Match_ReadT(ROM_1);
+ 205   4                                      if (T1 < 0)     //判断正负
+ 206   4                                      {
+ 207   5                                              T1 = -T1;
+ 208   5                                              Num[4] = 0xBF;          //显示"-"
+ 209   5                                      }
+ 210   4                                      else
+ 211   4                                      {
+ 212   5                                              Num[4] = 0xFF;     //显示"空"
+ 213   5                                      }
+ 214   4                                      Num[5] = SEG_Char[T1/100];
+ 215   4                                      Num[6] = SEG_Char[T1/10%10];
+ 216   4                                      Num[7] = SEG_Char[T1%10];
+ 217   4                                      DS18B20_Match_ConvertT(ROM_1);
+ 218   4                                      SEG_Display(Num);
+ 219   4                                      TR1 = 1;
+ 220   4                              }
+ 221   3                              SEG_Display(Num);
+ 222   3                      }
+ 223   2              }
+ 224   1      }
+ 225          /**
+ 226            * @brief  定时器0初始化函数
+ 227            */ 
+ 228          void Timer0_Init(void)          //50毫秒@12.000MHz
+ 229          {
+ 230   1              Timer0_Counter = 0;
+ 231   1              SEG_ShiftFlag = 0;              
+ 232   1              EA = 1;
+ 233   1              TMOD &= 0xF0;                   //设置定时器模式
+ 234   1              TMOD |= 0x01;                   //设置定时器模式
+ 235   1              TL0 = 0xB0;                             //设置定时初始值
+ 236   1              TH0 = 0x3C;                             //设置定时初始值
+ 237   1              TF0 = 0;                                //清除TF0标志
+ 238   1              ET0 = 1;                                //使能定时器0中断
+ 239   1              TR0 = 1;                                //定时器0开始计时
+C51 COMPILER V9.60.7.0   MAIN                                                              10/14/2023 13:15:55 PAGE 5   
+
+ 240   1      }
+ 241          
+ 242          /**
+ 243            * @brief  滚动显示模式下，设置每次滚动时间隔设置
+ 244            */ 
+ 245          void Timer0_ISR(void) interrupt 1
+ 246          {
+ 247   1              
+ 248   1              TL0 = 0xB0;                             //设置定时初始值
+ 249   1              TH0 = 0x3C;                             //设置定时初始值
+ 250   1              Timer0_Counter++;
+ 251   1              if (Timer0_Counter == 10)
+ 252   1              {
+ 253   2                      Timer0_Counter = 0;
+ 254   2                      SEG_ShiftFlag = 1;
+ 255   2              }
+ 256   1      }
+ 257          
+ 258          /**
+ 259            * @brief  定时器1初始化函数
+ 260            */ 
+ 261          void Timer1_Init(void)          //50毫秒@12.000MHz
+ 262          {
+ 263   1              EA=1;
+ 264   1              TMOD &= 0x0F;                   //设置定时器模式
+ 265   1              TMOD |= 0x10;                   //设置定时器模式
+ 266   1              TL1 = 0xB0;                             //设置定时初始值
+ 267   1              TH1 = 0x3C;                             //设置定时初始值
+ 268   1              TF1 = 0;                                //清除TF1标志
+ 269   1              TR1 = 1;                                //定时器1开始计时
+ 270   1              ET1=1;                                  //T1中断子开关
+ 271   1      }
+ 272          
+ 273          /**
+ 274            * @brief  ConvertT_Counter：定时器1计次变量
+ 275            */ 
+ 276          void Timer1_ISR(void)   interrupt 3
+ 277          {
+ 278   1              TL1 = 0xB0;                             //设置定时初始值
+ 279   1              TH1 = 0x3C;                             //设置定时初始值
+ 280   1              ConvertT_Counter++;
+ 281   1      }
+ 282          
+ 283          /**
+ 284            * @brief  外部中断0初始化函数，用于外部机械按键
+ 285            */ 
+ 286          void EXT0_Init(void)
+ 287          {
+ 288   1              EA = 1;         //打开中断总开关
+ 289   1          IT0 = 1;    //下降沿触发
+ 290   1              EX0 = 1;        //打开中断子开关
+ 291   1      }
+ 292          
+ 293          /**
+ 294            * @brief  机械按键外部中断服务函数，切换日期模式和时间
+ 295            */ 
+ 296          void EXT0_Key_ISR(void) interrupt 0
+ 297          {
+ 298   1              Key_Counter++;
+ 299   1              if (Key_Counter == 0)   //刷屏显示模式
+ 300   1              {       
+ 301   2                      Flag = ROLL;
+C51 COMPILER V9.60.7.0   MAIN                                                              10/14/2023 13:15:55 PAGE 6   
+
+ 302   2                      Timer0_Init();
+ 303   2                      SEG_Mode_Select(0x00);
+ 304   2              }
+ 305   1              else if (Key_Counter ==  1)     //时间显示模式
+ 306   1              {
+ 307   2                      Flag = TIME;
+ 308   2                      TR0 = 0;
+ 309   2                      SEG_Mode_Select(0x01);
+ 310   2              }
+ 311   1              else if(Key_Counter == 2)               //日期显示模式
+ 312   1              {
+ 313   2                      Flag = DATE;
+ 314   2                      TR0 = 0;
+ 315   2                      SEG_Mode_Select(0x02);
+ 316   2              }
+ 317   1              else if(Key_Counter == 3)               //温度显示模式
+ 318   1              {
+ 319   2                      Flag = TEMP;
+ 320   2                      TR0 = 0;
+ 321   2                      SEG_Mode_Select(0x03);
+ 322   2                      Key_Counter = -1;
+ 323   2              }
+ 324   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1234    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5      43
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

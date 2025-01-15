@@ -1,0 +1,99 @@
+C51 COMPILER V9.60.7.0   SEG_8                                                             10/12/2023 22:04:09 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE SEG_8
+OBJECT MODULE PLACED IN .\Objects\SEG_8.obj
+COMPILER INVOKED BY: D:\app_dl_study\keil_v5\C51\BIN\C51.EXE Hardware\SEG_8.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Hardware
+                    -;.\Main) DEBUG OBJECTEXTEND PRINT(.\Listings\SEG_8.lst) OBJECT(.\Objects\SEG_8.obj)
+
+line level    source
+
+   1          #include <REGX51.H>
+   2          #include "Sys.h"
+   3          #include "Delay.h"
+   4          #include "intrins.h"
+   5          // Mode display control pins
+   6          sbit Mode_P36 = P3^6;
+   7          sbit Mode_P37 = P3^7;
+   8          
+   9          
+  10          // 数码管共阳极编码
+  11          const uchar SEG_Char[]={0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, // 0 - 7
+  12                                                      0x80, 0x90, 0x88, 0x83, 0xC6, 0xA1, 0x86, 0x8E, // 8 - F
+  13                                                      0x7F};                                                                                 // 0x7E为"."
+  14                  
+  15          // 38译码器字段
+  16          uchar code LS138_ABC[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07}; // 0- 7
+  17          
+  18          //初始化数码管为不显示
+  19          void SEG_Init(uchar* Num)
+  20          {
+  21   1              uchar i;
+  22   1              for (i = 0; i < 8; i++)
+  23   1              {
+  24   2                      Num[i] = 0xff;
+  25   2              }
+  26   1      }
+  27          
+  28          /**
+  29            * @brief  八位数码管日期，时间显示输入；低位在左，高位在右
+  30            * @param  Num[] 需要显示输入的八位16进制数组
+  31            * @retval 无
+  32            */
+  33          void SEG_Display(uchar* Num)
+  34          {
+  35   1              uchar i, j;
+  36   1              for (i = 0; i < 8; i++)
+  37   1              {
+  38   2                      P2 &= 0xf8;
+  39   2                      P2 |= LS138_ABC[i];
+  40   2                      P0 = Num[i];
+  41   2                      Delay_MS(1);
+  42   2              }
+  43   1      }
+*** WARNING C280 IN LINE 35 OF Hardware\SEG_8.c: 'j': unreferenced local variable
+  44          
+  45          /**
+  46            * @brief  一位数码管模式显示输入
+  47            * @param  Mode需要呈现的显示模式
+  48            *                     (Mode = 0x01,show time;Mode = 0x02,show date;Mode = 0x03,show roll;)
+  49            * @retval     无
+  50            */
+  51          void SEG_Mode_Select(uchar Mode)
+  52          {
+  53   1              switch(Mode)
+C51 COMPILER V9.60.7.0   SEG_8                                                             10/12/2023 22:04:09 PAGE 2   
+
+  54   1              {
+  55   2                      case 0x00:
+  56   2                              Mode_P36 = 0;   
+  57   2                              Mode_P37 = 0;
+  58   2                              break;
+  59   2                      case 0x01:
+  60   2                              Mode_P36 = 1;
+  61   2                              Mode_P37 = 0;
+  62   2                              break;
+  63   2                      case 0x02:
+  64   2                              Mode_P36 = 0;
+  65   2                  Mode_P37 = 1;
+  66   2                              break;
+  67   2                      case 0x03:
+  68   2                              Mode_P36 = 1;
+  69   2                  Mode_P37 = 1;
+  70   2                              break;          
+  71   2              }
+  72   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    117    ----
+   CONSTANT SIZE    =      8    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     17       8
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

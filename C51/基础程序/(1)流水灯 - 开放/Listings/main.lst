@@ -1,0 +1,114 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              10/15/2023 13:55:44 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\app_dl_study\keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\
+                    -Listings\main.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX51.H>
+   2          #include <intrins.h>
+   3          sbit p30 = P3^0;
+   4          sbit p31 = P3^1;
+   5          typedef unsigned char u8;
+   6          typedef unsigned int u16;    //typedef定义数据类型
+   7          typedef unsigned long u32;    //typedef定义数据类型
+   8          u32 blink[]={0x00000001,0x00080002,0x00040004,0x00020008,0x00010010,
+   9                                                           0x00008020,0x00004040,0x00002080,0x00001100,0x00000a00,0x00000400};  
+  10           void delay(u16 x)
+  11           {
+  12   1               u16 i;
+  13   1               while(x--)
+  14   1               {
+  15   2                       for(i = 0; i < 123; i++);
+  16   2                       
+  17   2               }
+  18   1       }
+  19           void set_led_20(u32 res)//仅低20位有效
+  20           {
+  21   1               res &= 0x000fffff;
+  22   1               P0 = (res &  0x000000ff) >> (0*8);
+  23   1               P1 = (res &  0x0000ff00) >> (1*8);
+  24   1               P2 = (res &  0x000f0000) >> (2*8) ; //与或保证P2高4位不受影响
+  25   1       }
+  26          void main()                //主函数
+  27          {
+  28   1              unsigned char flow1[4] = {0xe7, 0xdb, 0xbd, 0x7e};      //中->边
+  29   1              unsigned char flow2[4] = {0xdb, 0xe7, 0x7e, 0xbd };     //边->中
+  30   1              u32 res1 =  0x00000000;
+  31   1              u32 res2 = ~0x00000001;
+  32   1              u32 res3 = ~0x00000001;
+  33   1              u32 res4 = 0;
+  34   1              while(1)
+  35   1              {
+  36   2                      if (p30 == 1 & p31 == 1)
+  37   2                      {
+  38   3                              res1 =  0x00000000;
+  39   3                              while(p30 == 1 & p31 == 1)
+  40   3                              {
+  41   4                              set_led_20(res1);
+  42   4                              res1 = ~res1;
+  43   4                              delay(300);
+  44   4                              }
+  45   3                      }
+  46   2                      else if(p30 == 0 & p31 == 1)
+  47   2                      {
+  48   3                              res2 = ~0x00000001;
+  49   3                              while(p30 == 0 & p31 == 1)
+  50   3                              {
+  51   4                              set_led_20(res2);
+  52   4                              delay(300);
+  53   4                              res2 = _lrol_(res2, 1);
+  54   4                              if (res2 == ~0x00100000)
+C51 COMPILER V9.60.7.0   MAIN                                                              10/15/2023 13:55:44 PAGE 2   
+
+  55   4                              {
+  56   5                                      res2 = ~0x00000001;
+  57   5                              }
+  58   4                              }
+  59   3      
+  60   3                      }
+  61   2                      else if(p30 == 1 & p31 == 0)
+  62   2                      {
+  63   3                              res3 = ~0x00000001;
+  64   3                              while(p30 == 1 & p31 == 0)
+  65   3                              {
+  66   4                              set_led_20(res3);
+  67   4                              delay(300);
+  68   4                              res3 = _lror_(res3, 1);
+  69   4                              if (res3 == ~0x80000000)
+  70   4                              {
+  71   5                                      res3 = ~0x00080000;
+  72   5                              }
+  73   4                              }
+  74   3      
+  75   3                      }
+  76   2                      else if(p30 == 0 & p31 == 0)
+  77   2                      {
+  78   3                              res4 = 0;
+  79   3                              while (p30 == 0 & p31 == 0)
+  80   3                              {
+  81   4                                      set_led_20(~blink[res4]);
+  82   4                                      delay(300);
+  83   4                                      res4 = (res4+1) % 11;
+  84   4                              }
+  85   3                      }
+  86   2              }
+  87   1      }
+  88          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    630    ----
+   CONSTANT SIZE    =      8    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     44      28
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

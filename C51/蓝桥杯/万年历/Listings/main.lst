@@ -1,0 +1,289 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              10/05/2023 16:59:07 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\app_dl_study\keil_v5\C51\BIN\C51.EXE Main\main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Hardware;.\Ma
+                    -in) DEBUG OBJECTEXTEND PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX51.H>
+   2          #include "Sys.h"
+   3          #include "NixieTupe.h"
+   4          #include "DS1302.h"
+   5          #include "DS18B20.h"
+   6          #include "Delay.h"
+   7          
+   8          #define ROLL 1
+   9          #define TIME 2
+  10          #define DATE 3
+  11          #define TEMP 4
+  12          
+  13          uchar Flag;     //模式标志
+  14          char S=0;       //按键计数
+  15          
+  16          uchar SMG_ShiftBit;
+  17          uint  TimerCount;                                                             
+  18                                                                                       
+  19          void Timer0_Init(void)          //100微秒@11.0592MHz
+  20          {
+  21   1              EA = 1;
+  22   1              TMOD= 0x01;                                     //设置定时器模式
+  23   1              TL0 = (65535-50000)%256;        //设置定时初始值
+  24   1              TH0 = (65535-50000)%256;        //设置定时初始值
+  25   1              TF0 = 0;                                        //清除TF0标志
+  26   1              TR0 = 1;                                        //定时器0开始计时
+  27   1      }
+  28          void Show_Silding(uchar *Num_Silding);
+  29          
+  30          int main(void)
+  31          {
+  32   1              uchar Num[8];   //数码管显示数组
+  33   1              uchar Ret, Sig;
+  34   1              uint text;      ///dashuiush
+  35   1              uint my=1;
+  36   1              uchar Num_Silding[25];
+  37   1              Num_Silding[24] = 0x7F;
+  38   1              
+  39   1      
+  40   1              Timer0_Init();
+  41   1              DS1302_Init();
+  42   1              
+  43   1              EA = 1;         //打开总中断开关
+  44   1              
+  45   1              PX0 = 1;
+  46   1          IT0 = 1;    //触发方式设置
+  47   1              EX0 = 1;        //打开外部中断0
+  48   1              
+  49   1              PT0 = 0;
+  50   1              ET0 = 1;
+  51   1              
+  52   1              NixieTupe_Mode_Select(0x01);    //默认为滚动显示
+  53   1              Flag=1;
+  54   1      
+C51 COMPILER V9.60.7.0   MAIN                                                              10/05/2023 16:59:07 PAGE 2   
+
+  55   1              while(1)
+  56   1              {
+  57   2                      if (my == 0)
+  58   2                      {
+  59   3                              my = 0;
+  60   3                      }
+  61   2                      else if (my == 1)
+  62   2                      {
+  63   3                              my = 1;
+  64   3                      }
+  65   2                      
+  66   2                      if (Flag == ROLL)
+  67   2                      {
+  68   3                              uchar i=0, j;
+  69   3                              while (Num_Silding[i+7]!=0x7F)
+  70   3                              {
+  71   4                                      if (Flag == ROLL)
+  72   4                                      {
+  73   5                                              text = Read_Temperature(&Sig);
+  74   5                                              for (j=0;j<8;j++)
+  75   5                                              {
+  76   6                                                      Ret = DS1302_ReadByte(0x81);
+  77   6                                                      //秒
+  78   6                                                      Num_Silding[7] = LedChar[BCDCode_GetUnit(Ret)];
+  79   6                                                      Num_Silding[6] = LedChar[BCDCode_GetDecade(Ret)];
+  80   6                                                      Num_Silding[5] = 0xBF;  //字符'-'，作间隔
+  81   6                                                      //分
+  82   6                                                      Ret = DS1302_ReadByte(0x83);
+  83   6                                                      Num_Silding[4] = LedChar[BCDCode_GetUnit(Ret)];
+  84   6                                                      Num_Silding[3] = LedChar[BCDCode_GetDecade(Ret)];
+  85   6                                                      Num_Silding[2] = 0xBF;  //字符'-'，作间隔
+  86   6                                                      //时
+  87   6                                                      Ret = DS1302_ReadByte(0x85);
+  88   6                                                      Num_Silding[1] = LedChar[BCDCode_GetUnit(Ret)];
+  89   6                                                      Num_Silding[0] = LedChar[BCDCode_GetDecade(Ret)];
+  90   6                                                      
+  91   6                                                      Num_Silding[8] = 0xF7;  //字符'_'，作间隔
+  92   6                                                      
+  93   6                                                      Ret = DS1302_ReadByte(0x87);
+  94   6                                                      Num_Silding[16] = LedChar[BCDCode_GetUnit(Ret)];
+  95   6                                                      Num_Silding[15] = LedChar[BCDCode_GetDecade(Ret)];
+  96   6                                                      Num_Silding[14] = 0xBF; //字符'-'，作间隔
+  97   6                                                      //月
+  98   6                                                      Ret = DS1302_ReadByte(0x89);
+  99   6                                                      Num_Silding[13] = LedChar[BCDCode_GetUnit(Ret)];
+ 100   6                                                      Num_Silding[12] = LedChar[BCDCode_GetDecade(Ret)];
+ 101   6                                                      Num_Silding[11] = 0xBF; //字符'-'，作间隔
+ 102   6                                                      //年
+ 103   6                                                      Ret = DS1302_ReadByte(0x8D);
+ 104   6                                                      Num_Silding[10] = LedChar[BCDCode_GetUnit(Ret)];
+ 105   6                                                      Num_Silding[9]  = LedChar[BCDCode_GetDecade(Ret)];
+ 106   6                                                      
+ 107   6                                                      Num_Silding[17] = 0xF7; //字符'_'，作间隔
+ 108   6                                                      
+ 109   6                                                      //温度显示
+ 110   6                                                      if(Sig==1)
+ 111   6                                                      {
+ 112   7                                                              Num_Silding[18] = 0xBF;
+ 113   7                                                      }
+ 114   6                                                      else if(Sig==0)
+ 115   6                                                      {
+ 116   7                                                              Num_Silding[18] = 0xB9; //符号-|正号
+C51 COMPILER V9.60.7.0   MAIN                                                              10/05/2023 16:59:07 PAGE 3   
+
+ 117   7                                                      }
+ 118   6                                                      Num_Silding[19] = LedChar[text/100];
+ 119   6                                                      Num_Silding[20] = LedChar[((text/10)%10)];
+ 120   6                                                      Num_Silding[21] = LedChar[(text%10)];
+ 121   6                                                      Num_Silding[22] = 0x9C;
+ 122   6                                                      Num_Silding[23] = 0xC6;
+ 123   6                                                      Num_Silding[24] = 0x7F;
+ 124   6                                                      
+ 125   6                                                      Num[j]=Num_Silding[i+j];
+ 126   6                                              }
+ 127   5                                              NixieTupe_Static_Display(Num);
+ 128   5                                              if (SMG_ShiftBit)
+ 129   5                                              {
+ 130   6                                                      i++;
+ 131   6                                                      SMG_ShiftBit=0;
+ 132   6                                              }
+ 133   5                                      }
+ 134   4                                      else
+ 135   4                                      {
+ 136   5                                              break;
+ 137   5                                      }
+ 138   4                              }
+ 139   3                      }
+ 140   2                      else if (Flag == TIME)
+ 141   2                      {
+ 142   3                              //秒
+ 143   3                              Ret = DS1302_ReadByte(0x81);
+ 144   3                              Num[7] = LedChar[BCDCode_GetUnit(Ret)];
+ 145   3                              Num[6] = LedChar[BCDCode_GetDecade(Ret)];
+ 146   3                              Num[5] = 0xBF;  //字符'-'，作间隔
+ 147   3                              //分
+ 148   3                              Ret = DS1302_ReadByte(0x83);
+ 149   3                              Num[4] = LedChar[BCDCode_GetUnit(Ret)];
+ 150   3                              Num[3] = LedChar[BCDCode_GetDecade(Ret)];
+ 151   3                              Num[2] = 0xBF;  //字符'-'，作间隔
+ 152   3                              //时
+ 153   3                              Ret = DS1302_ReadByte(0x85);
+ 154   3                              Num[1] = LedChar[BCDCode_GetUnit(Ret)];
+ 155   3                              Num[0] = LedChar[BCDCode_GetDecade(Ret)];
+ 156   3                              NixieTupe_Static_Display(Num);
+ 157   3                      }
+ 158   2                      else if (Flag == DATE)
+ 159   2                      {
+ 160   3                              //日
+ 161   3                              Ret = DS1302_ReadByte(0x87);
+ 162   3                              Num[7] = LedChar[BCDCode_GetUnit(Ret)];
+ 163   3                              Num[6] = LedChar[BCDCode_GetDecade(Ret)];
+ 164   3                              Num[5] = 0xBF;  //字符'-'，作间隔
+ 165   3                              //月
+ 166   3                              Ret = DS1302_ReadByte(0x89);
+ 167   3                              Num[4] = LedChar[BCDCode_GetUnit(Ret)];
+ 168   3                              Num[3] = LedChar[BCDCode_GetDecade(Ret)];
+ 169   3                              Num[2] = 0xBF;  //字符'-'，作间隔
+ 170   3                              //年
+ 171   3                              Ret = DS1302_ReadByte(0x8D);
+ 172   3                              Num[1] = LedChar[BCDCode_GetUnit(Ret)];
+ 173   3                              Num[0] = LedChar[BCDCode_GetDecade(Ret)];
+ 174   3                              NixieTupe_Static_Display(Num);
+ 175   3                      }
+ 176   2                      else if (Flag == TEMP)
+ 177   2                      {
+ 178   3                              text = Read_Temperature(&Sig);
+C51 COMPILER V9.60.7.0   MAIN                                                              10/05/2023 16:59:07 PAGE 4   
+
+ 179   3                              Num[0] = 0xFF;
+ 180   3                              if(Sig==1)
+ 181   3                              {
+ 182   4                                      Num[1] = 0xBF;
+ 183   4                              }
+ 184   3                              else if(Sig==0)
+ 185   3                              {
+ 186   4                                      Num[1] = 0xB9; //符号-|正号
+ 187   4                              }
+ 188   3                              Num[2] = LedChar[text/100];
+ 189   3                              Num[3] = LedChar[((text/10)%10)];
+ 190   3                              Num[4] = LedChar[text%10]; 
+ 191   3                              Num[5] = 0x9C;
+ 192   3                              Num[6] = 0xC6;
+ 193   3                              Num[7] = 0xFF;
+ 194   3                              NixieTupe_Static_Display(Num);
+ 195   3                              Delay_MS(5);    //确保温度已经转换 而不是在转换途中读取
+ 196   3                      }
+ 197   2              }
+ 198   1      }
+ 199          
+ 200          /**
+ 201            * @brief  机械按键外部中断服务函数，切换日期模式和时间
+ 202            */ 
+ 203          void Key() interrupt 0
+ 204          {
+ 205   1              S++;
+ 206   1              if (S == 0)     //刷屏显示模式
+ 207   1              {       
+ 208   2                      Flag = ROLL;
+ 209   2                      TimerCount=0;
+ 210   2                      TL0 = (65535-50000)%256;
+ 211   2                      TH0 = (65535-50000)%256;
+ 212   2                      TF0 = 0;                                
+ 213   2                      TR0 = 1;
+ 214   2                      NixieTupe_Mode_Select(0x01);
+ 215   2              }
+ 216   1              else if (S ==  1)       //时间显示模式
+ 217   1              {
+ 218   2                      SMG_ShiftBit=0;
+ 219   2                      Flag = TIME;
+ 220   2                      TR0 = 0;
+ 221   2                      NixieTupe_Mode_Select(0x02);
+ 222   2      
+ 223   2              }
+ 224   1              else if(S == 2)         //日期显示模式
+ 225   1              {
+ 226   2      
+ 227   2                      Flag = DATE;
+ 228   2                      TR0 = 0;
+ 229   2                      NixieTupe_Mode_Select(0x03);
+ 230   2              }
+ 231   1              else if(S == 3)         //日期显示模式
+ 232   1              {
+ 233   2      
+ 234   2                      Flag = TEMP;
+ 235   2                      TR0 = 0;
+ 236   2                      NixieTupe_Mode_Select(0x04);
+ 237   2                      S = -1;
+ 238   2              }
+ 239   1      }
+ 240          /**
+C51 COMPILER V9.60.7.0   MAIN                                                              10/05/2023 16:59:07 PAGE 5   
+
+ 241            * @brief  刷屏显示模式下，刷屏时间间隔设置
+ 242            */ 
+ 243          void Timer0() interrupt 1
+ 244          {
+ 245   1              
+ 246   1              TL0 = (65535-50000)%256;        //设置定时初始值
+ 247   1              TH0 = (65535-50000)%256;        //设置定时初始值
+ 248   1              TimerCount++;
+ 249   1              if (TimerCount == 28)
+ 250   1              {
+ 251   2                      TimerCount = 0;
+ 252   2                      SMG_ShiftBit = 1;
+ 253   2              }
+ 254   1      }
+ 255          
+ 256          
+ 257          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    931    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6      41
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

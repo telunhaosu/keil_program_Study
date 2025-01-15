@@ -1,0 +1,76 @@
+C51 COMPILER V9.59.0.0   MAIN__C                                                           04/02/2023 21:53:44 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN__C
+OBJECT MODULE PLACED IN .\Objects\main。c.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main。c.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\m
+                    -ain。c.lst) TABS(2) OBJECT(.\Objects\main。c.obj)
+
+line level    source
+
+   1          /*-----------------------------------------------
+   2          Function: 用渐变的PWM信号实现LED呼吸灯
+   3          Description: LED由暗逐渐变亮，再由亮逐渐变暗循环
+   4          Author: Zhang Kaizhou
+   5          Date: 2019-6-11 17:47:35
+   6          -----------------------------------------------*/
+   7          
+   8          #include <REGX52.H>
+   9          #include <INTRINS.H>
+  10          #define uchar unsigned char
+  11          #define uint unsigned int
+  12          #define PERIOD 500
+  13          /*全局变量定义*/
+  14          uint low = 0;
+  15            
+  16          /*端口定义*/
+  17          //sbit led = P2^7;
+  18          
+  19          /*函数声明*/
+  20          void delay(uint xus);
+  21          
+  22          /*主函数*/
+  23          void main(){
+  24   1        while(1){
+  25   2          P2 = 0xFF;
+  26   2            delay(5000);
+  27   2          for(low = 0; low < PERIOD; low++){
+  28   3            P2 = 0x00;
+  29   3            delay(low);
+  30   3            P2 = 0xFF;
+  31   3            delay(PERIOD - low);
+  32   3          }
+  33   2          P2 = 0x00;
+  34   2            delay(5000);
+  35   2          for(low = PERIOD - 1; low > 0; low--){
+  36   3            P2 = 0x00;
+  37   3            delay(low);
+  38   3            P2 = 0xFF;
+  39   3            delay(PERIOD - low);
+  40   3          }
+  41   2        }
+  42   1      }
+  43          
+  44          /*延时函数*/
+  45          void delay(uint xus){ // 延时9.766us * x + 8.682us(仿真测的数据)
+  46   1        while(xus--);
+  47   1      }
+  48          
+  49          
+  50          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    120    ----
+C51 COMPILER V9.59.0.0   MAIN__C                                                           04/02/2023 21:53:44 PAGE 2   
+
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

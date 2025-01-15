@@ -1,0 +1,35 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              04/24/2023 13:25:40 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <LCD1602.h>
+   2          
+   3          void main()
+   4          {
+   5   1        unsigned char str1[] = "   2021032992   ";
+   6   1        unsigned char str2[] = "  Hou Run Dong   ";
+   7   1        LCDInit();
+   8   1        LCDShowStr(0, 0, str1);
+   9   1        LCDShowStr(0, 1, str2);
+  10   1        while(1);
+  11   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     68    ----
+   CONSTANT SIZE    =     35    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      35
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

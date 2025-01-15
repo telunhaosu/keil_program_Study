@@ -1,0 +1,3 @@
+".\Objects\main.obj" 
+TO ".\Objects\流水灯-开放" 
+PRINT(".\Listings\流水灯-开放.m51")

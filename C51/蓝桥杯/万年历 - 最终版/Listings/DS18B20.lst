@@ -1,0 +1,273 @@
+C51 COMPILER V9.60.7.0   DS18B20                                                           10/09/2023 16:22:22 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE DS18B20
+OBJECT MODULE PLACED IN .\Objects\DS18B20.obj
+COMPILER INVOKED BY: D:\app_dl_study\keil_v5\C51\BIN\C51.EXE Hardware\DS18B20.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Hardwa
+                    -re;.\Main) DEBUG OBJECTEXTEND PRINT(.\Listings\DS18B20.lst) OBJECT(.\Objects\DS18B20.obj)
+
+line level    source
+
+   1          #include <REGX51.H>
+   2          #include <intrins.h>
+   3          #include "Delay.h"
+   4          #include "Sys.h"
+   5          sbit BUS = P2^3;
+   6          
+   7          uchar code DS18B20_ROM_0[]= {0x28,0x30,0xc5,0xb8,0x00,0x00,0x00,0x8e};
+   8          uchar code DS18B20_ROM_1[]= {0x28,0x31,0xc5,0xb8,0x00,0x00,0x00,0xb9};
+   9          
+  10          void Delay500us();
+  11          void Delay80us();
+  12          void Delay58us();
+  13          void Delay10us();
+  14          void Delay50us();
+  15          
+  16          /**
+  17            * @brief  DS18B20初始化函数
+  18            * @param  无
+  19            * @retval 返回0初始化成功，返回1初始化化失败
+  20            */
+  21          uchar DS18B20_Init(void)
+  22          {
+  23   1              uchar Ack;
+  24   1              BUS = 1;                        //确保总线起始时为高
+  25   1              BUS = 0;                        //拉低总线
+  26   1              Delay500us();           //持续 > 480us
+  27   1              BUS = 1;                        //释放总线
+  28   1              Delay80us();
+  29   1              Ack = BUS;
+  30   1              Delay500us();
+  31   1              return Ack;
+  32   1      }
+  33          
+  34          void DS18B20_WriteBit(uchar DataBit)
+  35          {
+  36   1              uchar i;
+  37   1              BUS = 0;                        //拉低
+  38   1              _nop_();_nop_();        //大于2us
+  39   1              BUS = DataBit;          //写入1位
+  40   1              Delay58us();            //使写时隙时间大于60us
+  41   1              BUS = 1;                        //释放总线
+  42   1              _nop_();_nop_();        //>1us
+  43   1      }
+*** WARNING C280 IN LINE 36 OF Hardware\DS18B20.c: 'i': unreferenced local variable
+  44          
+  45          uchar DS18B20_ReadBit(void)
+  46          {
+  47   1              uchar DataBit;
+  48   1              BUS=1;
+  49   1              BUS = 0;
+  50   1              _nop_();_nop_();
+  51   1              BUS = 1;
+  52   1              Delay10us();
+  53   1              DataBit = BUS;
+C51 COMPILER V9.60.7.0   DS18B20                                                           10/09/2023 16:22:22 PAGE 2   
+
+  54   1              Delay50us();
+  55   1              return DataBit;
+  56   1      }
+  57          
+  58          void DS18B20_WriteByte(uchar DataByte)
+  59          {
+  60   1              uchar i;
+  61   1              for (i=0; i < 8; i++)
+  62   1              {
+  63   2                      DS18B20_WriteBit(DataByte&(0x01<<i));
+  64   2              }
+  65   1      }
+  66          
+  67          uchar DS18B20_ReadByte(void)
+  68          {
+  69   1              uchar i, DataByte=0x00;
+  70   1              for (i=0; i < 8; i++)
+  71   1              {
+  72   2                      if (DS18B20_ReadBit())
+  73   2                      {
+  74   3                              DataByte |= (0x01<<i);
+  75   3                      }
+  76   2              }
+  77   1              return DataByte; 
+  78   1      }
+  79          
+  80          void DS18B20_ConvertT(void)
+  81          {
+  82   1              DS18B20_Init();
+  83   1              DS18B20_WriteByte(0xCC); //SKIP ROM
+  84   1              DS18B20_WriteByte(0x44); //Convert Temp
+  85   1      }
+  86          
+  87          float DS18B20_ReadT(void)
+  88          {
+  89   1              uchar LSB, MSB;
+  90   1              int MLSB;
+  91   1              float T;
+  92   1              DS18B20_Init();
+  93   1              DS18B20_WriteByte(0xCC);        //SKIP ROM
+  94   1              DS18B20_WriteByte(0xBE);        //读暂存器
+  95   1              LSB = DS18B20_ReadByte();
+  96   1              MSB = DS18B20_ReadByte();
+  97   1              MLSB = (MSB<<8)|LSB;
+  98   1              T = MLSB/16.0;
+  99   1              return T;
+ 100   1      }
+ 101          
+ 102          /**
+ 103            * @brief  DS18B20精度配置函数。默认为12位精度。
+ 104            * @param  Resolution: 配置精度参数
+ 105            *                     参数 精度 转换时间(ms)
+ 106            *                     0x1f  9     93.75
+ 107            *                     0x3f  10    187.5
+ 108            *                     0x5f  11    375
+ 109            *                     0x7f  12    750
+ 110            * @retval 无
+ 111            */
+ 112          void DS18B20_ConfigT(uchar Resolution)
+ 113          {
+ 114   1              DS18B20_Init();
+ 115   1              DS18B20_WriteByte(0xCC);        //SKIP ROM
+C51 COMPILER V9.60.7.0   DS18B20                                                           10/09/2023 16:22:22 PAGE 3   
+
+ 116   1              DS18B20_WriteByte(0x4E);        //写寄存器
+ 117   1              DS18B20_WriteByte(0x00);        //过温报警;查询报警命令(0xEC)才能使所配置的报警温度有效
+ 118   1              DS18B20_WriteByte(0x00);        //低温报警;查询报警命令(0xEC)才能使所配置的报警温度有效
+ 119   1              DS18B20_WriteByte(Resolution);  //写配置精度
+ 120   1              DS18B20_Init();                         //停止写入
+ 121   1      }
+ 122          /**
+ 123            * @brief  读取DS18B20ROM(序列号)，只适用于总线上有单个传感器。
+ 124            * @param  ROM：读取ROM后储存的数组
+ 125            * @retval 无。
+ 126            */
+ 127          void DS18B20_ReadROM(uchar* ROM)
+ 128          {
+ 129   1              uchar i;
+ 130   1              DS18B20_Init();
+ 131   1              DS18B20_WriteByte(0x33);        //read rom
+ 132   1              for (i=0; i < 8; i++)
+ 133   1              {
+ 134   2                      ROM[i] = DS18B20_ReadByte();
+ 135   2              }
+ 136   1      }
+ 137          /**
+ 138            * @brief  匹配DS18B20ROM
+ 139            * @param  ROM_Num：DS18B20编号。可以为ROM_0,ROM_1
+ 140            * @retval 无。
+ 141            */
+ 142          void DS18B20_MatchROM(uchar ROM_Num)
+ 143          {
+ 144   1              uchar i;
+ 145   1              DS18B20_WriteByte(0x55);        //match ROM
+ 146   1              switch(ROM_Num)
+ 147   1              {
+ 148   2                      case 0:
+ 149   2                              for (i = 0; i < 8; i++)
+ 150   2                                      DS18B20_WriteByte(DS18B20_ROM_0[i]);
+ 151   2                              break;
+ 152   2                      case 1:
+ 153   2                              for (i = 0; i < 8; i++)
+ 154   2                                      DS18B20_WriteByte(DS18B20_ROM_1[i]);
+ 155   2                              break;
+ 156   2                      default:
+ 157   2                              break;
+ 158   2              }
+ 159   1      }
+ 160          
+ 161          void DS18B20_Match_ConfigT(uchar Resolution, uchar ROM_Num)
+ 162          {
+ 163   1              DS18B20_Init();
+ 164   1              DS18B20_MatchROM(ROM_Num);
+ 165   1              DS18B20_WriteByte(0x4E);        //写寄存器
+ 166   1              DS18B20_WriteByte(0x00);        //过温报警;查询报警命令(0xEC)才能使所配置的报警温度有效
+ 167   1              DS18B20_WriteByte(0x00);        //低温报警;查询报警命令(0xEC)才能使所配置的报警温度有效
+ 168   1              DS18B20_WriteByte(Resolution);  //写配置精度
+ 169   1      //      DS18B20_Init();                         //停止写入
+ 170   1      }
+ 171          
+ 172          void DS18B20_Match_ConvertT(uchar ROM_Num)
+ 173          {
+ 174   1              DS18B20_Init();
+ 175   1              DS18B20_MatchROM(ROM_Num);
+ 176   1              DS18B20_WriteByte(0x44); //Convert Temp
+ 177   1      }
+C51 COMPILER V9.60.7.0   DS18B20                                                           10/09/2023 16:22:22 PAGE 4   
+
+ 178          
+ 179          float DS18B20_Match_ReadT(uchar ROM_Num)
+ 180          {
+ 181   1              uchar LSB, MSB;
+ 182   1              int MLSB;
+ 183   1              float T;
+ 184   1              DS18B20_Init();
+ 185   1              DS18B20_MatchROM(ROM_Num);
+ 186   1              DS18B20_WriteByte(0xBE);        //读暂存器
+ 187   1              LSB = DS18B20_ReadByte();
+ 188   1              MSB = DS18B20_ReadByte();
+ 189   1              MLSB = (MSB<<8)|LSB;
+ 190   1              T = MLSB/16.0;
+ 191   1              return T;
+ 192   1      }
+ 193          
+ 194          void Delay500us()               //@12.000MHz
+ 195          {
+ 196   1              unsigned char data i;
+ 197   1      
+ 198   1              _nop_();
+ 199   1              i = 247;
+ 200   1              while (--i);
+ 201   1      }
+ 202          
+ 203          void Delay80us()                //@12.000MHz
+ 204          {
+ 205   1              unsigned char data i;
+ 206   1      
+ 207   1              _nop_();
+ 208   1              i = 37;
+ 209   1              while (--i);
+ 210   1      }
+ 211          
+ 212          void Delay58us()                //@12.000MHz
+ 213          {
+ 214   1              unsigned char data i;
+ 215   1      
+ 216   1              _nop_();
+ 217   1              i = 26;
+ 218   1              while (--i);
+ 219   1      }
+ 220          
+ 221          void Delay10us()                //@12.000MHz
+ 222          {
+ 223   1              unsigned char data i;
+ 224   1      
+ 225   1              _nop_();
+ 226   1              i = 2;
+ 227   1              while (--i);
+ 228   1      }
+ 229          
+ 230          void Delay50us()                //@12.000MHz
+ 231          {
+ 232   1              unsigned char data i;
+ 233   1      
+ 234   1              _nop_();
+ 235   1              i = 22;
+ 236   1              while (--i);
+ 237   1      }
+ 238          
+ 239          
+C51 COMPILER V9.60.7.0   DS18B20                                                           10/09/2023 16:22:22 PAGE 5   
+
+ 240          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    454    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      20
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

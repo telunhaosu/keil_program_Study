@@ -1,0 +1,81 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              10/22/2023 13:38:45 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\app_dl_study\keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\
+                    -Listings\main.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include<intrins.h>
+   3          
+   4          #define a_addr 20//设置接收机1的地址
+   5          #define b_addr 21//设置接收机2的地址
+   6          
+   7          unsigned char code key_code[16]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x77,0x7c,0x39,0x5e,0x7
+             -9,0x71};
+   8          unsigned char num1=0;//发送给接收机1
+   9          unsigned char num2=0;//发送给接收机2
+  10          
+  11          void send_a() interrupt 0
+  12          {
+  13   1              TB8=1;
+  14   1              SBUF=a_addr;
+  15   1              while(TI==0);
+  16   1              TI=0;
+  17   1              TB8=0;
+  18   1              num1=(num1+1)%16;
+  19   1              SBUF=num1;
+  20   1              while(TI==0);
+  21   1              TI=0;
+  22   1      }
+  23          
+  24          void send_b() interrupt 2
+  25          {
+  26   1              TB8=1;
+  27   1              SBUF=b_addr;
+  28   1              while(TI==0);
+  29   1              TI=0;
+  30   1              TB8=0;
+  31   1              num2=(num2+1)%16;
+  32   1              SBUF=num2;
+  33   1              while(TI==0);
+  34   1              TI=0;
+  35   1      }
+  36          void play() interrupt 4
+  37          {
+  38   1                      P1=key_code[SBUF];
+  39   1                      RI=0;
+  40   1      }
+  41          void main()
+  42          {
+  43   1              IT0=1;EX0=1;
+  44   1              IT1=1;EX1=1;
+  45   1              ES = 1;
+  46   1              EA=1;//打开中断
+  47   1              TMOD=0x20;
+  48   1              SCON=0xf8;//方式3 SM2=1 许接
+  49   1              SM2 = 0;
+  50   1              TH1=TL1=0xfd;//波特率9600
+  51   1              TR1=1;
+  52   1              P1=key_code[0];
+  53   1              while(1);
+C51 COMPILER V9.60.7.0   MAIN                                                              10/22/2023 13:38:45 PAGE 2   
+
+  54   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    134    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

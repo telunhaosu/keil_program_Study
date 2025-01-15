@@ -1,0 +1,1 @@
+"Hardware\SEG_8.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(.\Hardware;.\Main) DEBUG OBJECTEXTEND PRINT(.\Listings\SEG_8.lst) OBJECT(.\Objects\SEG_8.obj)

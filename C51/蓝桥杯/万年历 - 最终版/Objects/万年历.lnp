@@ -1,0 +1,8 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\DS1302.obj",
+".\Objects\Delay.obj",
+".\Objects\SEG_8.obj",
+".\Objects\DS18B20.obj" 
+TO ".\Objects\万年历" 
+PRINT(".\Listings\万年历.m51")

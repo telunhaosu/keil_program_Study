@@ -1,0 +1,51 @@
+C51 COMPILER V9.59.0.0   MIAN                                                              04/02/2023 23:39:42 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MIAN
+OBJECT MODULE PLACED IN .\Objects\mian.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE mian.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\mian
+                    -.lst) TABS(2) OBJECT(.\Objects\mian.obj)
+
+line level    source
+
+   1          #include <REGX51.H>
+   2          
+   3          unsigned char code tab[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f};
+   4          unsigned char code big[] = {0x7F, 0xBF, 0xDF, 0xEF, 0xF7, 0xFB, 0xFD, 0xFE};
+   5          unsigned char code num[] = {0x5b,0x06,0x3f, 0x4f,0x5b,0x6f, 0x6f, 0x5b};
+   6          void delay(unsigned int i)
+   7          {
+   8   1        unsigned int j;
+   9   1        for (; i >0; i--)
+  10   1        {
+  11   2          for (j = 124; j > 0; j--);
+  12   2        }
+  13   1      } 
+  14          void main(void)
+  15          {
+  16   1        while(1)
+  17   1        {
+  18   2          unsigned char i;
+  19   2          for (i = 0; i < 8; i++)
+  20   2          {
+  21   3            P3 = big[7 - i];
+  22   3            P2 = num[i];
+  23   3            delay(5);
+  24   3            
+  25   3          }
+  26   2        }
+  27   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     88    ----
+   CONSTANT SIZE    =     26    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
