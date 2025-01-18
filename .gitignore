@@ -1,1 +1,13 @@
+# 忽略VSCODE生成文件（keil-asssitant）
 .vscode/
+
+# 忽略VSCODE工作空间文件
+.code-workspace
+
+# 忽略EIDE生成文件
+.cmsis/
+.eide/
+.pack/
+build/
+.clang-format
+.eide.usr.ctx.json
