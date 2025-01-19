@@ -2,7 +2,7 @@
 .vscode/
 
 # 忽略VSCODE工作空间文件
-.code-workspace
+*.code-workspace
 
 # 忽略EIDE生成文件
 .cmsis/
