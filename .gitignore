@@ -11,3 +11,4 @@
 build/
 .clang-format
 .eide.usr.ctx.json
+RTE_Components.h
