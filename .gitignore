@@ -3,13 +3,3 @@
 
 # 忽略VSCODE工作空间文件
 *.code-workspace
-
-# 忽略EIDE生成文件
-.cmsis/
-.eide/
-.pack/
-build/
-.clang-format
-.eide.usr.ctx.json
-RTE_Components.h
-Project.uvguix.特伦好苏
