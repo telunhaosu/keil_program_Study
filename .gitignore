@@ -1,4 +1,4 @@
-# 忽略VSCODE生成文件（keil-asssitant）
+# 忽略VSCODE生成文件
 .vscode/
 
 # 忽略VSCODE工作空间文件
